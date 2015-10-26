@@ -1,3 +1,2 @@
 Select menu by position
-Invalid menu causes an exception in Timeline (select menu ($File$, "Open Recent...")
 Ctrl + mouse click

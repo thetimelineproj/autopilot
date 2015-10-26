@@ -377,9 +377,12 @@ class Instruction(object):
     # Select menu
     #
     def select_menu(self):
-        self.gui_explorer.find_menu(self.get_all_args())
-        Logger.success(self.result_message("Found"))
-        wx.GetApp().GetTopWindow().click_menu_item(self.gui_explorer.item_id)
+        try:
+            self.gui_explorer.find_menu(self.get_all_args())
+            Logger.success(self.result_message("Found"))
+            wx.GetApp().GetTopWindow().click_menu_item(self.gui_explorer.item_id)
+        except NotFoundException:
+            Logger.failure(self.result_message("NOT Found"))
 
     #
     # Close dialog

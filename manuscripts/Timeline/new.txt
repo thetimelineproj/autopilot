@@ -2,5 +2,5 @@
 # File - New menu
 #
 
-select menu ($File$, "New...")
+select menu ($File$, $New$)
 click button ($Cancel$)
