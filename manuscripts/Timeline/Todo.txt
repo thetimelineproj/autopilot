@@ -1,1 +1,5 @@
 Select menu by position
+<<<<<<< HEAD
+=======
+Ctrl + mouse click
+>>>>>>> origin/master
