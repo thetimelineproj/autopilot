@@ -1,0 +1,7 @@
+# Test manuscript
+assert open ("Test Dialog")
+assert open ("X-Dialog")
+enter text(1, Roger1)
+click button(Greet)
+close dialog()
+assert closed("Test Dialog")

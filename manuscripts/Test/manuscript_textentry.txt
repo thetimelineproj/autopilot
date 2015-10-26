@@ -1,0 +1,5 @@
+# Test manuscript
+#enter text(1, "Hello")
+#close dialog ("Help"|"Input Text")
+#click button(Cancel)
+exit application

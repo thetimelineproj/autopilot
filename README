@@ -1,0 +1,17 @@
+This directory contains the 0.1.0 release of Autopilot
+
+Autopilot is a cross-platform application for gui testing
+
+Autopilot is free software, distributed under the GNU General Public License,
+version 3. For more information, see the file COPYING.
+
+To learn what is new in this version of Autopilot, see
+documentation/changelog.rst.
+
+For installation instructions, see documentation/installing.rst.
+
+For project status, see documentation/status.rst.
+
+For more information about Autopilot, visit its website at
+http://thetimelineproj.sourceforge.net/ or send an email to the user mailing
+list at <thetimelineproj-user@lists.sourceforge.net>.

@@ -1,0 +1,4 @@
+# Test manuscript
+enter text(1, Roger1)
+click button(Öppna)
+click button(Avbryt)

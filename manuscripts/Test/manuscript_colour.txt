@@ -1,0 +1,3 @@
+# Test manuscript
+assert open (Färg)
+click button(Avbryt)
