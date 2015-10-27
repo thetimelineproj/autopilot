@@ -50,8 +50,10 @@ class TestEngine(object):
         if self.appargs.investigate():
             self._log_effective_manuscript()
         else:
-            self._test()
-            Logger.log()
+            try:
+                self._test()
+            finally:
+                Logger.log()
         return True
 
 

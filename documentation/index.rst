@@ -7,6 +7,7 @@ Welcome to Autopilot
     about
     screenshots
     installing
+    tutorial
     support
     status
     history
