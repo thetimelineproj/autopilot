@@ -18,14 +18,17 @@ Get the source code here: |latest_zip|_.
 When you install from source, you have to install all required dependencies
 yourself. Autopilot requires:
 
-* Python version 2.5 or greater (http://www.python.org)
+* Python version 2.7 or greater (http://www.python.org)
 * wxPython version 2.8.9.2 or greater (http://www.wxpython.org)
+
+On Windows you also need:
+* PyWin32 (http://sourceforge.net/projects/pywin32/files/pywin32/)
 
 On Linux systems, you can often install these via the package manager.
 
 Once you have extracted the Autopilot zip and installed the required
 dependencies, you should be able to run the application with this command::
 
-    python <path-to-autopilot-directory>/src/lib/app/testengine.py
+    python <path-to-autopilot-directory>/src/run.py
 
-Preferable you create a shortcut on your platform that issues this command.
+Preferable you create a shortcut on your platform that issues the command.
