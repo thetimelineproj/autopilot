@@ -30,6 +30,8 @@ class TestEngine(object):
         self.appargs = ApplicationArguments()
         logger.set_debug(self.appargs.degbug())
         self.manuscript = Manuscript(self.appargs.manuscripts(), self.appargs.paths())
+        if self.appargs.autoexit():
+            self.manuscript.add_autoexit_instruction()
 
     def _log_effective_manuscript(self):
         print "%s %s\n" % (self.appargs.myname(), self.appargs.myversion())

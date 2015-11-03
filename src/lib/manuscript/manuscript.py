@@ -57,6 +57,9 @@ class Manuscript():
     def get_log_path(self):
         return self.first_manuscript_path_found
 
+    def add_autoexit_instruction(self):
+        self.instructions.append("exit application")
+
     def _load_instructions(self, manuscripts):
         self.instructions = []
         for manuscript in manuscripts:
