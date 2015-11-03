@@ -16,6 +16,7 @@
 # along with Autopilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import os
 from lib.manuscript.pathfinder import find_path
 
 
@@ -40,7 +41,7 @@ class Manuscript():
     def __init__(self, manuscripts, paths):
         self.windows = []
         self.execution_started = False
-        self.first_manuscript_path_found = None
+        self.first_manuscript_path_found = os.getcwd()
         self.paths = paths
         self.instructions = self._load_instructions(manuscripts)
 
