@@ -41,15 +41,17 @@ class Manuscript():
     def __init__(self, manuscripts, paths):
         self.windows = []
         self.execution_started = False
-        self.first_manuscript_path_found = os.getcwd()
+        self.first_manuscript_path_found = None
         self.paths = paths
         self.instructions = self._load_instructions(manuscripts)
 
     def __str__(self):
         collector = []
         for instruction in self.instructions:
+            if isinstance(instruction, str):
+                instruction = instruction.decode("cp1252")
             collector.append(instruction)
-        return "\n".join(collector)
+        return u"\n".join(collector)
 
     def get_instructions(self):
         return self.instructions

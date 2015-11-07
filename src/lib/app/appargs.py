@@ -18,7 +18,6 @@
 
 import sys
 import os.path
-
 from optparse import OptionParser
 
 

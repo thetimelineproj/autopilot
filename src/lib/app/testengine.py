@@ -16,6 +16,7 @@
 # along with Autopilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import sys
 from appargs import ApplicationArguments
 from lib.manuscript.manuscript import Manuscript
 import lib.reporting.logger as logger
@@ -34,17 +35,15 @@ class TestEngine(object):
             self.manuscript.add_autoexit_instruction()
 
     def _log_effective_manuscript(self):
-        print "%s %s\n" % (self.appargs.myname(), self.appargs.myversion())
-        print "Application under test = %s" % self.appargs.program()
-        print "Effective manuscript:"
-        print "-----------------------------------------"
-        print str(self.manuscript)
-        print "-----------------------------------------"
+        Logger.set_path(self.manuscript.get_log_path())
+        Logger.add_section("Manuscript", u"%s" % self.manuscript)
 
     def _test(self):
         Logger.set_path(self.manuscript.get_log_path())
         Logger.set_log_dialog_descriptions(self.appargs.log_dialog_descriptions())
-        Logger.add_section("Manuscript", str(self.manuscript))
+        Logger.add_debug("Application arguments")
+        Logger.add_debug(" ".join(sys.argv))
+        Logger.add_section("Manuscript", u"%s" % self.manuscript)
         instructions = Instructions(self.manuscript, self.appargs.timedelay())
         start_app(instructions, self.appargs.program())
 
@@ -56,7 +55,7 @@ class TestEngine(object):
                 self._test()
             finally:
                 Logger.log()
-        return True
+        return not Logger.has_errors()
 
 
 if __name__ == '__main__':

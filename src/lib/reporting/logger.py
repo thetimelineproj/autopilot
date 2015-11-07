@@ -82,7 +82,7 @@ class Logger():
     @classmethod
     def _tostr(self, msg):
         if isinstance(msg, unicode):
-            msg = msg.encode('cp1252') 
+            msg = msg.encode("cp1252")
         return msg + "\n"
 
     @classmethod
@@ -180,3 +180,9 @@ class Logger():
             collector.append("%-6.6s %s" % (result, expected))
         cls.add_section("Autopilot resultReport", "\n".join(collector))
 
+    @classmethod
+    def has_errors(self):
+        for _, result in reports:
+            if not result:
+                return True
+        return False

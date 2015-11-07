@@ -274,6 +274,10 @@ class GuiExplorer(object):
             valid_labels = self._get_valid_labels(label)
             for lbl in valid_labels:
                 try:
+                    itm = menu.FindItemByPosition(0)
+                    l = itm.GetItemLabelText()
+                    if l[-1] == u"\u2026":
+                        pass
                     item_id = menu.FindItem(lbl)
                 except Exception, ex:
                     pass
@@ -288,7 +292,10 @@ class GuiExplorer(object):
         return valid_labels
 
     def _get_elipsis_label(self, label, alternative_labels):
+        if label.endswith("..."):
+            label = label[:-3]
         alternative_labels.append(label + "...")
+        alternative_labels.append(label + u"\u2026")
 
     def _get_accelerator_labels(self, label, alternative_labels):
         for i in range(len(label)):

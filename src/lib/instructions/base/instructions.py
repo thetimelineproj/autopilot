@@ -39,7 +39,11 @@ class Instructions(object):
         self.windows = []
         self.instructions = []
         for line in [line for line in manuscript.get_instructions() if not line.startswith("#") and len(line.strip()) > 0]:
-            instruction = parse(line)
+            try:
+                instruction = parse(line)
+            except Exception:
+                Logger.add_error("Can't parse instruction: '%s'" % line)
+                raise
             if instruction is not None:
                 self.instructions.append(instruction)
         collector = []

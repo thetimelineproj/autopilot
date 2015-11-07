@@ -20,9 +20,9 @@ from lib.reporting.logger import Logger
 
 
 class MenuBarDescriber():
-    
+
     @classmethod
-    def describe(self,frame):
+    def describe(self, frame):
         try:
             menu_bar = frame.GetMenuBar()
             if menu_bar is not None:
@@ -30,7 +30,7 @@ class MenuBarDescriber():
                 Logger.add(" ")
         except AttributeError:
             pass
-        
+
     @classmethod
     def describe_menu_bar(self, menu_bar):
         Logger.newline()
@@ -48,11 +48,11 @@ class MenuBarDescriber():
             self.describe_menu_item(item)
             if item.SubMenu is not None and item.SubMenu.MenuItemCount > 0:
                 self.describe_submenu(item.SubMenu)
-        
+
     @classmethod
     def describe_menu_item(self, item):
-        Logger.add("      %4d   %-24.24s  '%s' " % (item.Id, item.Label, item.Text) )
-        
+        Logger.add("      %4d   %-24.24s  '%s' " % (item.Id, item.Label, item.Text))
+
     @classmethod
     def describe_submenu(self, submenu):
         Logger.add(" ")
@@ -60,5 +60,5 @@ class MenuBarDescriber():
         Logger.add("             Id   Label                      Text")
         Logger.add("           ----   ------------------------   ---------------------")
         for item in submenu.MenuItems:
-            Logger.add("           %4d   %-24.24s  '%s' " % (item.Id, item.Label, item.Text) )
+            Logger.add("           %4d   %-24.24s  '%s' " % (item.Id, item.Label, item.Text))
         Logger.add(" ")
