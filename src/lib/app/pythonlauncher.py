@@ -56,6 +56,8 @@ def run_python_file(args):
             sys.stdout = open('outfile.txt', 'w')
             source = open(filename, 'rU').read()
             exec compile(source, filename, "exec") in main_mod.__dict__
+        except Exception, ex:
+            pass
         finally:
             # Restore the old __main__
             sys.modules['__main__'] = old_main_mod

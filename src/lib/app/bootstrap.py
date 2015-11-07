@@ -17,6 +17,7 @@
 
 
 import os
+import threading
 from lib.app.pythonlauncher import run_python_file
 from lib.reporting.logger import Logger
 import lib.wrappers.dialog as dialog
@@ -44,8 +45,8 @@ instructions = None
 def start_app(myinstructions, path):
     global instructions
     instructions = myinstructions
-    wrap_wx_classes()
     Logger.bold_header("Starting application %s" % os.path.basename(path))
+    wrap_wx_classes()
     run_python_file([path, ])
 
 

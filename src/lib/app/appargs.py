@@ -18,7 +18,6 @@
 
 import sys
 import os.path
-
 from optparse import OptionParser
 
 
@@ -49,6 +48,7 @@ The program searches for the program to test in the following ways:
     -m     start data file(s)
     -l     log dialog descriptions or not
     -d     set debug on or off
+    -e     add a last 'exit application' instruction
     -t     time delay between instructions in seconds
     -i     don't run test just display effective paths to program, script and log files",
 """
@@ -60,6 +60,7 @@ HELP = {
     "m": "start data file(s)",
     "l": "log dialog descriptions or not",
     "d": "set debug on or off",
+    "e": "add a last 'exit application' instruction",
     "t": "time delay between instructions in seconds",
     "i": "don't run test just display effective paths to program, script and log files",
 }
@@ -84,6 +85,8 @@ class ApplicationArguments(object):
             "-l", "--descriptions", dest="descriptions", action="store_true", default=False, help=HELP["l"])
         parser.add_option(
             "-d", "--debug", dest="debug", action="store_true", default=False, help=HELP["d"])
+        parser.add_option(
+            "-e", "--autoexit", dest="autoexit", action="store_true", default=False, help=HELP["e"])
         parser.add_option(
             "-i", "--investigate", dest="investigate", action="store_true", default=False, help=HELP["i"])
         parser.add_option(
@@ -171,3 +174,6 @@ class ApplicationArguments(object):
 
     def degbug(self):
         return self.options.debug
+
+    def autoexit(self):
+        return self.options.autoexit

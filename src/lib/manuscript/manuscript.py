@@ -16,6 +16,7 @@
 # along with Autopilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import os
 from lib.manuscript.pathfinder import find_path
 
 
@@ -47,14 +48,19 @@ class Manuscript():
     def __str__(self):
         collector = []
         for instruction in self.instructions:
+            if isinstance(instruction, str):
+                instruction = instruction.decode("cp1252")
             collector.append(instruction)
-        return "\n".join(collector)
+        return u"\n".join(collector)
 
     def get_instructions(self):
         return self.instructions
 
     def get_log_path(self):
         return self.first_manuscript_path_found
+
+    def add_autoexit_instruction(self):
+        self.instructions.append("exit application")
 
     def _load_instructions(self, manuscripts):
         self.instructions = []
