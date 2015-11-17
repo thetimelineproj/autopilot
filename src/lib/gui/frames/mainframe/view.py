@@ -16,7 +16,10 @@
 # along with Autopilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import os
+
 import wx
+
 from lib.gui.frames.mainframe.controller import MainFrameController
 
 
@@ -36,7 +39,7 @@ class MainFrane(wx.Frame):
         self.SetSize((1000, 400))
 
     def set_icon(self):
-        icon = wx.Icon(r'C:\Users\roger.RLDATA\workspace\Timeline\autopilot\icons\icon1.png', wx.BITMAP_TYPE_PNG)
+        icon = wx.Icon(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', 'icons', 'icon1.png'), wx.BITMAP_TYPE_PNG)
         self.SetIcon(icon)
 
     def create_menu(self):
