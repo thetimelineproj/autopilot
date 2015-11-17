@@ -48,7 +48,7 @@ class TestEditorDialogController(object):
             self.autopilot_test.set_inspect(self.view.GetInspect())
             self.autopilot_test.set_delay(self.view.GetDelay())
             self.autopilot_test.set_exit_when_done(self.view.GetExit())
-            self.view.Close()
+            self.view.CloseOk()
             self.autopilot_test.to_xml()
 
     def on_cancel_clicked(self, event):

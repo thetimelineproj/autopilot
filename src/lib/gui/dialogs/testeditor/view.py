@@ -110,6 +110,9 @@ class TestEditorDialog(Dialog):
     def Close(self):
         self.EndModal(wx.ID_CANCEL)
 
+    def CloseOk(self):
+        self.EndModal(wx.ID_OK)
+
     def GetName(self):
         return self.txt_name.GetValue()
 
