@@ -94,11 +94,6 @@ class Manuscript():
             self.instructions.append("# Invalid include statement '%s'" % line)
 
     def _get_file_lines(self, path):
-        lines = []
-        try:
-            f = open(path)
-            lines = f.read().split("\n")
-        finally:
-            f.close()
-        return lines
+        with open(path) as f:
+            return f.read().split("\n")
 
