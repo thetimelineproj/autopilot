@@ -181,7 +181,7 @@ class MainFrameController(object):
             atest = ET.SubElement(root, "autopilottest")
             ET.SubElement(atest, "name").text = test.name
             ET.SubElement(atest, "app").text = test.app_under_test
-            ET.SubElement(atest, "manuscript").text = "%s\\%s" % (test.manuscript_paths, test.start_manuscript)
+            ET.SubElement(atest, "manuscript").text = os.path.join(test.manuscript_paths, test.start_manuscript)
             ET.SubElement(atest, "exit").text = "%s" % test.exit_when_done
             ET.SubElement(atest, "delay").text = test.delay
             ET.SubElement(atest, "debug").text = "%s" % test.debug
@@ -208,7 +208,7 @@ class MainFrameController(object):
         self.view.SelectFirstTest()
 
     def _display_logfile(self, path):
-        f = open("%s\\%s" % (path, LOGFILE))
+        f = open(os.path.join(path, LOGFILE))
         log = f.read()
         f.close()
         self.view.DisplayLog(log)

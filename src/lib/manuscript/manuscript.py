@@ -75,7 +75,7 @@ class Manuscript():
             self.instructions.append("# Path not found for data file '%s'" % manuscript)
         else:
             if self.first_manuscript_path_found is None:
-                self.first_manuscript_path_found = path.rsplit("\\", 1)[0]
+                (self.first_manuscript_path_found, _) = os.path.split(path)
             for line in self._get_file_lines(path):
                 self._load_instruction(line)
 
