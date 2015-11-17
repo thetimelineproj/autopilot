@@ -25,7 +25,7 @@ from lib.gui.data.autopilottest import AutopilotTest
 import xml.etree.ElementTree as ET
 
 
-START_SCRIPT = r"C:\Users\roger.RLDATA\workspace\Timeline\autopilot\src\run.py",
+START_SCRIPT = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "run.py")
 TEMPFILE = "autopilottest.tmp"
 LOGFILE = "autopilot.log"
 
