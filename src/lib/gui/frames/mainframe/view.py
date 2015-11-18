@@ -51,8 +51,8 @@ class FrameGuiCreator(object):
     def _create_file_menu(self, menu_bar):
         menu = wx.Menu()
         mnu_open = menu.Append(wx.ID_ANY, 'Open...')
-        self.mnu_file_open_recent_submenu = wx.Menu()
-        menu.AppendMenu(wx.ID_ANY, "Open &Recent", self.mnu_file_open_recent_submenu)
+        self.mnu_open_recent = wx.Menu()
+        menu.AppendMenu(wx.ID_ANY, "Open &Recent", self.mnu_open_recent)
         menu.AppendSeparator()
         mnu_save = menu.Append(wx.ID_ANY, 'Save')
         mnu_save_as = menu.Append(wx.ID_ANY, 'Save As...')
@@ -63,8 +63,8 @@ class FrameGuiCreator(object):
         self.Bind(wx.EVT_MENU, self.controller.on_save, mnu_save)
         self.Bind(wx.EVT_MENU, self.controller.on_save_as, mnu_save_as)
         self.Bind(wx.EVT_MENU, self.controller.on_app_exit, mnu_exit)
-        for item in self.mnu_file_open_recent_submenu.GetMenuItems():
-            self.mnu_file_open_recent_submenu.DeleteItem(item)
+        for item in self.mnu_open_recent.GetMenuItems():
+            self.mnu_open_recent.DeleteItem(item)
         self.open_recent_map = {}
         for path in self.controller.get_recently_opened():
             self.SetRecentlyOpened(path)
@@ -143,6 +143,15 @@ class FrameGuiCreator(object):
         sizer_1.Fit(self)
         self.Layout()
 
+    def _add_item_to_open_recent_menu(self, path):
+        item = self.mnu_open_recent.Append(wx.ID_ANY, self._format_menu_text(path))
+        self.open_recent_map[item.GetId()] = path
+        self.Bind(wx.EVT_MENU, self.controller.on_open_recent, item)
+
+    def _display_selected_test_in_browser(self):
+        test = self.tests_list.GetClientData(self.tests_list.GetSelection())
+        self.text.SetValue(test.to_display_format())
+
 
 class MainFrane(wx.Frame, FrameGuiCreator):
 
@@ -153,9 +162,7 @@ class MainFrane(wx.Frame, FrameGuiCreator):
         self.controller.on_init()
 
     def SetRecentlyOpened(self, path):
-        item = self.mnu_file_open_recent_submenu.Append(wx.ID_ANY, self._format_menu_text(path))
-        self.open_recent_map[item.GetId()] = path
-        self.Bind(wx.EVT_MENU, self.controller.on_open_recent, item)
+        self._add_item_to_open_recent_menu(path)
 
     def GetPath(self, wx_id):
         return self.open_recent_map[wx_id]
@@ -167,8 +174,7 @@ class MainFrane(wx.Frame, FrameGuiCreator):
         self.text.SetValue(test.to_display_format())
 
     def DisplaySelectedTest(self):
-        test = self.tests_list.GetClientData(self.tests_list.GetSelection())
-        self.text.SetValue(test.to_display_format())
+        self._display_selected_test_in_browser()
 
     def DisplayLog(self, log):
         self.text.SetValue(log)
