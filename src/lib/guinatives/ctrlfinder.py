@@ -28,7 +28,7 @@ class Found(Exception):
 
 
 def get_dialog_label():
-    return facade.get_window_text(facade.get_active_window()).decode("cp1252")
+    return facade.get_window_text(facade.get_active_window()).decode("utf-8")
 
 
 class GuiExplorer(object):
@@ -77,7 +77,7 @@ class GuiExplorer(object):
             found_msg = "win Label (%s) found" % label
             hwnd = facade.get_active_window()
             winlbl = facade.get_window_text(hwnd)
-            winlbl = winlbl.decode("cp1252")
+            winlbl = winlbl.decode("utf-8")
             if winlbl == label:
                 self.winctrl = hwnd
                 raise Found(found_msg)
@@ -209,7 +209,6 @@ class GuiExplorer(object):
         if label is not None:
             found_msg = "win Label (%s) found" % label
             for hwnd, _, winlbl in facade.get_children(facade.get_active_window()):
-                winlbl = winlbl.decode("cp1252")
                 if winlbl == label:
                     self.winctrl = hwnd
                     raise Found(found_msg)

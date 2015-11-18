@@ -302,7 +302,7 @@ def scan(text):
 
         # Comment
         if i == 0 and text[i] == '#':
-            lexeme = text.decode("cp1252")
+            lexeme = text.decode("utf-8")
             typename = "Comment"
             token = Token(KEYWORD, text, ID_COMMENT, col=0)
             tokens.append(token)
@@ -444,7 +444,6 @@ def is_number(s):
 
 
 def _parse_string(text, i):
-    text = text.decode("cp1252")
     if text[i] == '"':
         inx = text.find('"', i + 1)
     else:
