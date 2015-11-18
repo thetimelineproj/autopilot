@@ -22,6 +22,7 @@ import xml.etree.ElementTree
 from subprocess import Popen, PIPE
 from lib.gui.dialogs.testeditor.view import TestEditorDialog
 from lib.gui.data.autopilottest import AutopilotTest
+from lib.app.settings import Settings
 import xml.etree.ElementTree as ET
 
 
@@ -46,15 +47,26 @@ class MainFrameController(object):
 
     def __init__(self, view):
         self.view = view
+        self.settings = Settings()
 
     def on_init(self):
         pass
+
+    def get_recently_opened(self):
+        return self.settings.get_recently_opened()
 
     def on_open(self, event):
         try:
             self._open(self._get_file_path("Open"))
         except NoFilePathSelected:
             pass
+
+    def on_open_recent(self, event):
+        self.open_path_if_exists(self.view.GetPath(event.GetId()))
+
+    def open_path_if_exists(self, path):
+        if os.path.exists(path):
+            self._open(path)
 
     def on_save(self, event):
         try:
@@ -206,6 +218,9 @@ class MainFrameController(object):
             test.set_inspect(xmltest.find("inspect").text == "True")
             self.view.NewTest(test)
         self.view.SelectFirstTest()
+        self.view.DisplaySelectedTest()
+        if self.settings.save_recently_opened(path):
+            self.view.SetRecentlyOpened(path)
 
     def _display_logfile(self, path):
         f = open("%s\\%s" % (path, LOGFILE))
