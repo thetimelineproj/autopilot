@@ -400,7 +400,6 @@ def scan(text):
 
 
 def _parse_identifier(text, i):
-    text = text.decode("cp1252")
     # Collection of all characters that belongs to the identifier
     collector = []
     maxlength = len(text)
