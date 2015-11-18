@@ -42,7 +42,10 @@ class Win32Strategy(object):
     def get_children(self, hwnd):
         children = []
         win32gui.EnumChildWindows(hwnd, self._get_child, children)
-        return children
+        collector = []
+        for hwnd, x, label in children:
+            collector.append((hwnd, x, label.decode("cp1252")))
+        return collector
 
     def send_ctrl_key_down(self):
         win32api.keybd_event(win32con.VK_CONTROL, 0, 0, 0)
