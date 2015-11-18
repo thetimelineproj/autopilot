@@ -89,8 +89,10 @@ class FrameGuiCreator(object):
     def _create_manuscript_menu(self, menu_bar):
         menu = wx.Menu()
         mnu_effective = menu.Append(wx.ID_ANY, 'Display Effective')
+        mnu_edit = menu.Append(wx.ID_ANY, 'Edit')
         menu_bar.Append(menu, 'Manuscript')
         self.Bind(wx.EVT_MENU, self.controller.on_effective_manuscript, mnu_effective)
+        self.Bind(wx.EVT_MENU, self.controller.on_edit, mnu_edit)
 
     def _create_log_menu(self, menu_bar):
         menu = wx.Menu()

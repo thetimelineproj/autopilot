@@ -142,6 +142,14 @@ class MainFrameController(object):
         except NoTestFound:
             pass
 
+    def on_edit(self, event):
+        path = self.view.GetTest().get_manuscript()
+        editor = os.getenv('EDITOR')
+        if editor:
+            os.system("%s %s" % (editor, path))
+        else:
+            os.system(path)
+
     def on_open_log(self, event):
         try:
             test = self._get_test()
@@ -159,7 +167,7 @@ class MainFrameController(object):
 
     def _save_to_tempfile(self, text):
         f = open(TEMPFILE, "w")
-        f.write(text.encode("cp1252"))
+        f.write(text.encode("utf-8"))
         f.close()
 
     def _get_test(self):
