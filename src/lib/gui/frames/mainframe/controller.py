@@ -55,6 +55,10 @@ class MainFrameController(object):
     def get_recently_opened(self):
         return self.settings.get_recently_opened()
 
+    #
+    # File menu actions
+    #
+
     def on_open(self, event):
         try:
             self._open(self._get_file_path("Open"))
@@ -63,10 +67,6 @@ class MainFrameController(object):
 
     def on_open_recent(self, event):
         self.open_path_if_exists(self.view.GetPath(event.GetId()))
-
-    def open_path_if_exists(self, path):
-        if os.path.exists(path):
-            self._open(path)
 
     def on_save(self, event):
         try:
@@ -87,20 +87,16 @@ class MainFrameController(object):
     def on_app_exit(self, event):
         pass
 
+
+    #
+    # Test menu actions
+    #
+
     def on_test_new(self, event):
         test = AutopilotTest()
         d = TestEditorDialog(self.view, "New Test", test)
         if d.ShowModal() == wx.ID_OK:
             self.view.NewTest(test)
-
-    def on_test_edit(self, event):
-        try:
-            test = self._get_test()
-            d = TestEditorDialog(self.view, "Edit Test", test)
-            if d.ShowModal() == wx.ID_OK:
-                self.view.UpdateTest(test)
-        except NoTestFound:
-            pass
 
     def on_test_run(self, event):
         try:
@@ -129,6 +125,19 @@ class MainFrameController(object):
         except NoSelectionFound:
             pass
 
+    def on_test_edit(self, event):
+        try:
+            test = self._get_test()
+            d = TestEditorDialog(self.view, "Edit Test", test)
+            if d.ShowModal() == wx.ID_OK:
+                self.view.UpdateTest(test)
+        except NoTestFound:
+            pass
+
+    #
+    # Manusctip menu actions
+    #
+
     def on_effective_manuscript(self, event):
         try:
             test = self._get_test()
@@ -150,6 +159,9 @@ class MainFrameController(object):
         else:
             os.system(path)
 
+    #
+    # Log menu actions
+    #
     def on_open_log(self, event):
         try:
             test = self._get_test()
@@ -159,6 +171,14 @@ class MainFrameController(object):
 
     def on_open_temp_log(self, event):
         self._display_logfile(os.getcwd())
+
+    #
+    # Other actions
+    #
+
+    def open_path_if_exists(self, path):
+        if os.path.exists(path):
+            self._open(path)
 
     def on_test_selection_changed(self, event):
         lbx = event.GetEventObject()
@@ -231,9 +251,8 @@ class MainFrameController(object):
             self.view.SetRecentlyOpened(path)
 
     def _display_logfile(self, path):
-        f = open("%s\\%s" % (path, LOGFILE))
-        log = f.read()
-        f.close()
+        with open(os.path.join(path, LOGFILE)) as f:
+            log = f.read().decode("utf-8")
         self.view.DisplayLog(log)
 
     def _get_file_path(self, heading):
