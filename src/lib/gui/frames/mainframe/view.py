@@ -75,13 +75,13 @@ class FrameGuiCreator(object):
 
     def _create_test_menu(self, menu_bar):
         menu = wx.Menu()
-        mnu_new = menu.Append(wx.ID_ANY, 'New Test')
-        mnu_run = menu.Append(wx.ID_ANY, 'Run Test')
+        mnu_new = menu.Append(wx.ID_ANY, 'New')
+        mnu_run = menu.Append(wx.ID_ANY, 'Run')
         mnu_run_selection = menu.Append(wx.ID_ANY, 'Run Selection')
         menu.AppendSeparator()
-        mnu_edit = menu.Append(wx.ID_ANY, 'Edit Test')
+        mnu_edit = menu.Append(wx.ID_ANY, 'Edit')
         menu.AppendSeparator()
-        mnu_remove_test = menu.Append(wx.ID_ANY, 'Remove Test')
+        mnu_remove_test = menu.Append(wx.ID_ANY, 'Remove')
         menu_bar.Append(menu, 'Test')
         self.Bind(wx.EVT_MENU, self.controller.on_test_new, mnu_new)
         self.Bind(wx.EVT_MENU, self.controller.on_test_run, mnu_run)

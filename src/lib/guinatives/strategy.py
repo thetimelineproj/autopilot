@@ -16,8 +16,10 @@
 # along with Autopilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import wx
 import platform
 from lib.guinatives.strategywin32 import Win32Strategy
+from lib.reporting.logger import Logger
 
 
 class WinStrategy(object):
@@ -38,7 +40,14 @@ class WinStrategy(object):
         return self.impl.get_foreground_window()
 
     def get_active_window(self):
-        return self.impl.get_active_window()
+        if hasattr(self.impl, "get_active_window"):
+            return self.impl.get_active_window()
+        else:
+            win = wx.GetActiveWindow()
+            if win:
+                return win.Handle
+            else:
+                return -1
 
     def get_classname(self, hwnd):
         return self.impl.get_classname(hwnd)
