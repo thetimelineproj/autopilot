@@ -22,6 +22,7 @@ import xml.etree.ElementTree
 from subprocess import Popen, PIPE
 from lib.gui.dialogs.testeditor.view import TestEditorDialog
 from lib.gui.data.autopilottest import AutopilotTest
+from lib.app.settings import Settings
 import xml.etree.ElementTree as ET
 
 
@@ -46,9 +47,17 @@ class MainFrameController(object):
 
     def __init__(self, view):
         self.view = view
+        self.settings = Settings()
 
     def on_init(self):
         pass
+
+    def get_recently_opened(self):
+        return self.settings.get_recently_opened()
+
+    #
+    # File menu actions
+    #
 
     def on_open(self, event):
         try:
@@ -56,16 +65,17 @@ class MainFrameController(object):
         except NoFilePathSelected:
             pass
 
+    def on_open_recent(self, event):
+        self.open_path_if_exists(self.view.GetPath(event.GetId()))
+
     def on_save(self, event):
         try:
-            self._get_test()
             self._save(self.path)
         except NoTestFound:
             pass
 
     def on_save_as(self, event):
         try:
-            self._get_test()
             self._save(self._get_file_path("Save As"))
         except NoTestFound:
             pass
@@ -75,20 +85,21 @@ class MainFrameController(object):
     def on_app_exit(self, event):
         pass
 
+    #
+    # Test menu actions
+    #
+
     def on_test_new(self, event):
         test = AutopilotTest()
         d = TestEditorDialog(self.view, "New Test", test)
         if d.ShowModal() == wx.ID_OK:
             self.view.NewTest(test)
+            self._save(self.path)
 
-    def on_test_edit(self, event):
-        try:
-            test = self._get_test()
-            d = TestEditorDialog(self.view, "Edit Test", test)
-            if d.ShowModal() == wx.ID_OK:
-                self.view.UpdateTest(test)
-        except NoTestFound:
-            pass
+    def on_remove_test(self, event):
+        test = self._get_test()
+        self.view.RemoveTest(test)
+        self._save(self.path)
 
     def on_test_run(self, event):
         try:
@@ -117,6 +128,19 @@ class MainFrameController(object):
         except NoSelectionFound:
             pass
 
+    def on_test_edit(self, event):
+        try:
+            test = self._get_test()
+            d = TestEditorDialog(self.view, "Edit Test", test)
+            if d.ShowModal() == wx.ID_OK:
+                self.view.UpdateTest(test)
+        except NoTestFound:
+            pass
+
+    #
+    # Manusctip menu actions
+    #
+
     def on_effective_manuscript(self, event):
         try:
             test = self._get_test()
@@ -130,6 +154,17 @@ class MainFrameController(object):
         except NoTestFound:
             pass
 
+    def on_edit(self, event):
+        path = self.view.GetTest().get_manuscript()
+        editor = os.getenv('EDITOR')
+        if editor:
+            os.system("%s %s" % (editor, path))
+        else:
+            os.system(path)
+
+    #
+    # Log menu actions
+    #
     def on_open_log(self, event):
         try:
             test = self._get_test()
@@ -140,6 +175,14 @@ class MainFrameController(object):
     def on_open_temp_log(self, event):
         self._display_logfile(os.getcwd())
 
+    #
+    # Other actions
+    #
+
+    def open_path_if_exists(self, path):
+        if os.path.exists(path):
+            self._open(path)
+
     def on_test_selection_changed(self, event):
         lbx = event.GetEventObject()
         test = lbx.GetClientData(lbx.GetSelection())
@@ -147,7 +190,7 @@ class MainFrameController(object):
 
     def _save_to_tempfile(self, text):
         f = open(TEMPFILE, "w")
-        f.write(text.encode("cp1252"))
+        f.write(text.encode("utf-8"))
         f.close()
 
     def _get_test(self):
@@ -206,12 +249,14 @@ class MainFrameController(object):
             test.set_inspect(xmltest.find("inspect").text == "True")
             self.view.NewTest(test)
         self.view.SelectFirstTest()
+        self.view.DisplaySelectedTest()
+        if self.settings.save_recently_opened(path):
+            self.view.SetRecentlyOpened(path)
 
     def _display_logfile(self, path):
-        f = open(os.path.join(path, LOGFILE))
-        log = f.read()
-        f.close()
-        self.view.DisplayLog(log)
+        with open(os.path.join(path, LOGFILE)) as f:
+            log = f.read().decode("utf-8")
+            self.view.DisplayLog(log)
 
     def _get_file_path(self, heading):
         d = wx.FileDialog(self.view, heading)

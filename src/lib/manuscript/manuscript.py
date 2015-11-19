@@ -49,7 +49,7 @@ class Manuscript():
         collector = []
         for instruction in self.instructions:
             if isinstance(instruction, str):
-                instruction = instruction.decode("cp1252")
+                instruction = instruction.decode("utf-8")
             collector.append(instruction)
         return u"\n".join(collector)
 
@@ -75,7 +75,7 @@ class Manuscript():
             self.instructions.append("# Path not found for data file '%s'" % manuscript)
         else:
             if self.first_manuscript_path_found is None:
-                (self.first_manuscript_path_found, _) = os.path.split(path)
+                self.first_manuscript_path_found = os.path.dirname(path)
             for line in self._get_file_lines(path):
                 self._load_instruction(line)
 
@@ -95,5 +95,4 @@ class Manuscript():
 
     def _get_file_lines(self, path):
         with open(path) as f:
-            return f.read().split("\n")
-
+            return f.read().decode("utf-8").split("\n")

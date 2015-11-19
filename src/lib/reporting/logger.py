@@ -82,7 +82,7 @@ class Logger():
     @classmethod
     def _tostr(self, msg):
         if isinstance(msg, unicode):
-            msg = msg.encode("cp1252")
+            msg = msg.encode("utf-8")
         return msg + "\n"
 
     @classmethod

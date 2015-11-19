@@ -17,25 +17,21 @@
 
 
 import os
-
 import wx
 
 from lib.gui.frames.mainframe.controller import MainFrameController
 
 
-class MainFrane(wx.Frame):
+class FrameGuiCreator(object):
 
-    def __init__(self, *args, **kwargs):
-        wx.Frame.__init__(self, *args, **kwargs)
-        self.controller = MainFrameController(self)
+    def __init__(self):
         self.create_gui()
-        self.controller.on_init()
 
     def create_gui(self):
         self.set_icon()
+        self.create_main_panel()
         self.create_menu()
         self.create_status_bar()
-        self.create_main_panel()
         self.SetSize((1000, 400))
 
     def set_icon(self):
@@ -45,17 +41,19 @@ class MainFrane(wx.Frame):
     def create_menu(self):
         try:
             menu_bar = wx.MenuBar()
-            self.create_file_menu(menu_bar)
-            self.create_test_menu(menu_bar)
-            self.create_manuscript_menu(menu_bar)
-            self.create_log_menu(menu_bar)
+            self._create_file_menu(menu_bar)
+            self._create_test_menu(menu_bar)
+            self._create_manuscript_menu(menu_bar)
+            self._create_log_menu(menu_bar)
             self.SetMenuBar(menu_bar)
         except Exception, ex:
             pass
 
-    def create_file_menu(self, menu_bar):
+    def _create_file_menu(self, menu_bar):
         menu = wx.Menu()
         mnu_open = menu.Append(wx.ID_ANY, 'Open...')
+        self.mnu_open_recent = wx.Menu()
+        menu.AppendMenu(wx.ID_ANY, "Open &Recent", self.mnu_open_recent)
         menu.AppendSeparator()
         mnu_save = menu.Append(wx.ID_ANY, 'Save')
         mnu_save_as = menu.Append(wx.ID_ANY, 'Save As...')
@@ -66,27 +64,41 @@ class MainFrane(wx.Frame):
         self.Bind(wx.EVT_MENU, self.controller.on_save, mnu_save)
         self.Bind(wx.EVT_MENU, self.controller.on_save_as, mnu_save_as)
         self.Bind(wx.EVT_MENU, self.controller.on_app_exit, mnu_exit)
+        for item in self.mnu_open_recent.GetMenuItems():
+            self.mnu_open_recent.DeleteItem(item)
+        self.open_recent_map = {}
+        for path in self.controller.get_recently_opened():
+            self.SetRecentlyOpened(path)
+        try:
+            self.controller.open_path_if_exists(self.controller.get_recently_opened()[0])
+        except IndexError:
+            pass
 
-    def create_test_menu(self, menu_bar):
+    def _create_test_menu(self, menu_bar):
         menu = wx.Menu()
-        mnu_new = menu.Append(wx.ID_ANY, 'New Test')
-        mnu_run = menu.Append(wx.ID_ANY, 'Run Test')
+        mnu_new = menu.Append(wx.ID_ANY, 'New')
+        mnu_run = menu.Append(wx.ID_ANY, 'Run')
         mnu_run_selection = menu.Append(wx.ID_ANY, 'Run Selection')
         menu.AppendSeparator()
-        mnu_edit = menu.Append(wx.ID_ANY, 'Edit Test')
+        mnu_edit = menu.Append(wx.ID_ANY, 'Edit')
+        menu.AppendSeparator()
+        mnu_remove_test = menu.Append(wx.ID_ANY, 'Remove')
         menu_bar.Append(menu, 'Test')
         self.Bind(wx.EVT_MENU, self.controller.on_test_new, mnu_new)
         self.Bind(wx.EVT_MENU, self.controller.on_test_run, mnu_run)
         self.Bind(wx.EVT_MENU, self.controller.on_test_run_selection, mnu_run_selection)
         self.Bind(wx.EVT_MENU, self.controller.on_test_edit, mnu_edit)
+        self.Bind(wx.EVT_MENU, self.controller.on_remove_test, mnu_remove_test)
 
-    def create_manuscript_menu(self, menu_bar):
+    def _create_manuscript_menu(self, menu_bar):
         menu = wx.Menu()
         mnu_effective = menu.Append(wx.ID_ANY, 'Display Effective')
+        mnu_edit = menu.Append(wx.ID_ANY, 'Edit')
         menu_bar.Append(menu, 'Manuscript')
         self.Bind(wx.EVT_MENU, self.controller.on_effective_manuscript, mnu_effective)
+        self.Bind(wx.EVT_MENU, self.controller.on_edit, mnu_edit)
 
-    def create_log_menu(self, menu_bar):
+    def _create_log_menu(self, menu_bar):
         menu = wx.Menu()
         mnu_open = menu.Append(wx.ID_ANY, "Open")
         mnu_open_temp = menu.Append(wx.ID_ANY, "Open temp")
@@ -120,6 +132,11 @@ class MainFrane(wx.Frame):
         self.__do_layout()
         self.Bind(wx.EVT_LISTBOX, self.controller.on_test_selection_changed, self.tests_list)
 
+    def _format_menu_text(self, path):
+        return "%s (%s)" % (
+            os.path.basename(path),
+            os.path.dirname(os.path.abspath(path)))
+
     def __set_properties(self):
         self.window_1_pane_1.SetBackgroundColour(wx.Colour(255, 255, 0))
         self.window_1_pane_2.SetBackgroundColour(wx.Colour(50, 153, 204))
@@ -132,11 +149,42 @@ class MainFrane(wx.Frame):
         sizer_1.Fit(self)
         self.Layout()
 
+    def _add_item_to_open_recent_menu(self, path):
+        item = self.mnu_open_recent.Append(wx.ID_ANY, self._format_menu_text(path))
+        self.open_recent_map[item.GetId()] = path
+        self.Bind(wx.EVT_MENU, self.controller.on_open_recent, item)
+
+    def _display_selected_test_in_browser(self):
+        test = self.tests_list.GetClientData(self.tests_list.GetSelection())
+        self.text.SetValue(test.to_display_format())
+
+
+class MainFrane(wx.Frame, FrameGuiCreator):
+
+    def __init__(self, *args, **kwargs):
+        wx.Frame.__init__(self, *args, **kwargs)
+        self.controller = MainFrameController(self)
+        FrameGuiCreator.__init__(self)
+        self.controller.on_init()
+
+    def SetRecentlyOpened(self, path):
+        self._add_item_to_open_recent_menu(path)
+
+    def GetPath(self, wx_id):
+        return self.open_recent_map[wx_id]
+
     def NewTest(self, test):
         self.tests_list.Append(test.get_name(), test)
 
+    def RemoveTest(self, test):
+        inx = self.tests_list.GetSelection()
+        self.tests_list.Delete(inx)
+
     def DisplayTest(self, test):
         self.text.SetValue(test.to_display_format())
+
+    def DisplaySelectedTest(self):
+        self._display_selected_test_in_browser()
 
     def DisplayLog(self, log):
         self.text.SetValue(log)
