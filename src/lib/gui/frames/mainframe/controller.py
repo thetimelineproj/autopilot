@@ -70,14 +70,12 @@ class MainFrameController(object):
 
     def on_save(self, event):
         try:
-            self._get_test()
             self._save(self.path)
         except NoTestFound:
             pass
 
     def on_save_as(self, event):
         try:
-            self._get_test()
             self._save(self._get_file_path("Save As"))
         except NoTestFound:
             pass
@@ -86,7 +84,6 @@ class MainFrameController(object):
 
     def on_app_exit(self, event):
         pass
-
 
     #
     # Test menu actions
@@ -97,6 +94,12 @@ class MainFrameController(object):
         d = TestEditorDialog(self.view, "New Test", test)
         if d.ShowModal() == wx.ID_OK:
             self.view.NewTest(test)
+            self._save(self.path)
+
+    def on_remove_test(self, event):
+        test = self._get_test()
+        self.view.RemoveTest(test)
+        self._save(self.path)
 
     def on_test_run(self, event):
         try:
