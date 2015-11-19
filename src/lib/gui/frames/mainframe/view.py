@@ -80,11 +80,14 @@ class FrameGuiCreator(object):
         mnu_run_selection = menu.Append(wx.ID_ANY, 'Run Selection')
         menu.AppendSeparator()
         mnu_edit = menu.Append(wx.ID_ANY, 'Edit Test')
+        menu.AppendSeparator()
+        mnu_remove_test = menu.Append(wx.ID_ANY, 'Remove Test')
         menu_bar.Append(menu, 'Test')
         self.Bind(wx.EVT_MENU, self.controller.on_test_new, mnu_new)
         self.Bind(wx.EVT_MENU, self.controller.on_test_run, mnu_run)
         self.Bind(wx.EVT_MENU, self.controller.on_test_run_selection, mnu_run_selection)
         self.Bind(wx.EVT_MENU, self.controller.on_test_edit, mnu_edit)
+        self.Bind(wx.EVT_MENU, self.controller.on_remove_test, mnu_remove_test)
 
     def _create_manuscript_menu(self, menu_bar):
         menu = wx.Menu()
@@ -171,6 +174,10 @@ class MainFrane(wx.Frame, FrameGuiCreator):
 
     def NewTest(self, test):
         self.tests_list.Append(test.get_name(), test)
+
+    def RemoveTest(self, test):
+        inx = self.tests_list.GetSelection()
+        self.tests_list.Delete(inx)
 
     def DisplayTest(self, test):
         self.text.SetValue(test.to_display_format())
