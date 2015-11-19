@@ -39,14 +39,17 @@ class WindowDescriber():
     @classmethod
     def describe_window(self, hwnd=None):
         if facade.has_win_implementation():
-            nbr_of_children = len(facade.get_children(hwnd))
-            if hwnd is None:
-                hwnd = facade.get_active_window()
-            rect = facade.get_window_rect(hwnd)
-            Logger.bold_header("Window Description \n   hwnd:            %d \n   Classname:       '%s' \n   Label:           '%s'\n   Nbr of children: %d\n   Position:        (%d, %d)\n   Size:            (%d, %d)" % (
-                hwnd, facade.get_classname(hwnd), facade.get_window_text(hwnd), nbr_of_children, rect[0], rect[1], rect[2], rect[3]))
-            Logger.header2("Native Description")
-            self.describe_children(hwnd)
+            try:
+                nbr_of_children = len(facade.get_children(hwnd))
+                if hwnd is None:
+                    hwnd = facade.get_active_window()
+                rect = facade.get_window_rect(hwnd)
+                Logger.bold_header("Window Description \n   hwnd:            %d \n   Classname:       '%s' \n   Label:           '%s'\n   Nbr of children: %d\n   Position:        (%d, %d)\n   Size:            (%d, %d)" % (
+                    hwnd, facade.get_classname(hwnd), facade.get_window_text(hwnd), nbr_of_children, rect[0], rect[1], rect[2], rect[3]))
+                Logger.header2("Native Description")
+                self.describe_children(hwnd)
+            except Exception, ex:
+                Logger.add_error("Native windows description failed")
 
     @classmethod
     def describe_children(self, hwnd):
