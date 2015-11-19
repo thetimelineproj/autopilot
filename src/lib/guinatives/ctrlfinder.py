@@ -195,9 +195,13 @@ class GuiExplorer(object):
         if wx_classname is not None and pos is not None:
             found_msg = "win order (%d) found for class(%s)" % (pos, facade.wx_to_win_classname(wx_classname))
             inx = 0
-            hwnd = facade.get_active_window()
+            try:
+                hwnd = facade.get_active_window()
+                children = facade.get_children(hwnd)
+            except:
+                return
             win_classname = facade.wx_to_win_classname(wx_classname)
-            for hwnd, class_name, _ in facade.get_children(hwnd):
+            for hwnd, class_name, _ in children:
                 if class_name == win_classname:
                     if inx == pos - 1:
                         self.winctrl = hwnd
@@ -208,7 +212,12 @@ class GuiExplorer(object):
     def find_win_ctrl_by_label(self, parent, label):
         if label is not None:
             found_msg = "win Label (%s) found" % label
-            for hwnd, _, winlbl in facade.get_children(facade.get_active_window()):
+            try:
+                hwnd = facade.get_active_window()
+                children = facade.get_children(hwnd)
+            except:
+                return
+            for hwnd, _, winlbl in children:
                 if winlbl == label:
                     self.winctrl = hwnd
                     raise Found(found_msg)
