@@ -224,7 +224,7 @@ class MainFrameController(object):
             atest = ET.SubElement(root, "autopilottest")
             ET.SubElement(atest, "name").text = test.name
             ET.SubElement(atest, "app").text = test.app_under_test
-            ET.SubElement(atest, "manuscript").text = "%s\\%s" % (test.manuscript_paths, test.start_manuscript)
+            ET.SubElement(atest, "manuscript").text = os.path.join(test.manuscript_paths, test.start_manuscript)
             ET.SubElement(atest, "exit").text = "%s" % test.exit_when_done
             ET.SubElement(atest, "delay").text = test.delay
             ET.SubElement(atest, "debug").text = "%s" % test.debug
@@ -256,7 +256,7 @@ class MainFrameController(object):
     def _display_logfile(self, path):
         with open(os.path.join(path, LOGFILE)) as f:
             log = f.read().decode("utf-8")
-        self.view.DisplayLog(log)
+            self.view.DisplayLog(log)
 
     def _get_file_path(self, heading):
         d = wx.FileDialog(self.view, heading)

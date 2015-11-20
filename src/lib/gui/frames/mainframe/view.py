@@ -18,6 +18,7 @@
 
 import os
 import wx
+
 from lib.gui.frames.mainframe.controller import MainFrameController
 
 
@@ -34,7 +35,7 @@ class FrameGuiCreator(object):
         self.SetSize((1000, 400))
 
     def set_icon(self):
-        icon = wx.Icon(r'icons\icon1.png', wx.BITMAP_TYPE_PNG)
+        icon = wx.Icon(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', 'icons', 'icon1.png'), wx.BITMAP_TYPE_PNG)
         self.SetIcon(icon)
 
     def create_menu(self):
