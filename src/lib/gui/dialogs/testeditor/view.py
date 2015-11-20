@@ -73,12 +73,11 @@ class TestEditorDialog(Dialog):
                 label="Exit Application when done"
                 border="LEFT|TOP"
             />
-            <BoxSizerVertical>
-                <FlexGridSizer columns="2" growableColumns="1" proportion="1" border="ALL">
-                    <StaticText align="ALIGN_CENTER_VERTICAL" label="$(delay_text)" />
-                    <TextCtrl name="txt_delay" width="150" />
-                </FlexGridSizer>
-            </BoxSizerVertical>
+            <BoxSizerHorizontal border="LEFT|TOP">
+                <StaticText align="ALIGN_CENTER_VERTICAL" label="$(delay_text)" />
+                <TextCtrl name="txt_delay" width="30" />
+                <StretchSpacer/>
+            </BoxSizerHorizontal>
         </StaticBoxSizerVertical>
         <BoxSizerHorizontal>
             <StretchSpacer />
@@ -102,7 +101,7 @@ class TestEditorDialog(Dialog):
             "aut_text": "Program to Test:",
             "manuscript_text": "Start Manuscript:",
             "flags": "Properties",
-            "delay_text": "Delay in ms",
+            "delay_text": "Delay in seconds: ",
             "open_button_size": (25, -1),
         }, title=title)
         self.controller.on_init(autopilot_test)
