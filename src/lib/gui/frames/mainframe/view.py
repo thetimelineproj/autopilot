@@ -38,18 +38,16 @@ class FrameGuiCreator(object):
         self.SetIcon(icon)
 
     def create_menu(self):
-        try:
-            menu_bar = wx.MenuBar()
-            self._create_file_menu(menu_bar)
-            self._create_test_menu(menu_bar)
-            self._create_manuscript_menu(menu_bar)
-            self._create_log_menu(menu_bar)
-            self.SetMenuBar(menu_bar)
-        except Exception, ex:
-            pass
+        menu_bar = wx.MenuBar()
+        self._create_file_menu(menu_bar)
+        self._create_test_menu(menu_bar)
+        self._create_manuscript_menu(menu_bar)
+        self._create_log_menu(menu_bar)
+        self.SetMenuBar(menu_bar)
 
     def _create_file_menu(self, menu_bar):
         menu = wx.Menu()
+        mnu_file_new = menu.Append(wx.ID_ANY, 'New...')
         mnu_open = menu.Append(wx.ID_ANY, 'Open...')
         self.mnu_open_recent = wx.Menu()
         menu.AppendMenu(wx.ID_ANY, "Open &Recent", self.mnu_open_recent)
@@ -59,6 +57,7 @@ class FrameGuiCreator(object):
         menu.AppendSeparator()
         mnu_exit = menu.Append(wx.ID_EXIT, 'Exit Program')
         menu_bar.Append(menu, 'File')
+        self.Bind(wx.EVT_MENU, self.controller.on_file_new, mnu_file_new)
         self.Bind(wx.EVT_MENU, self.controller.on_open, mnu_open)
         self.Bind(wx.EVT_MENU, self.controller.on_save, mnu_save)
         self.Bind(wx.EVT_MENU, self.controller.on_save_as, mnu_save_as)
@@ -205,7 +204,7 @@ class MainFrane(wx.Frame, FrameGuiCreator):
             tests.append(self.tests_list.GetClientData(i))
         return tests
 
-    def ClearTests(self):
+    def ClearAllTests(self):
         self.tests_list.Clear()
 
     def SelectFirstTest(self):
