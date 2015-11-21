@@ -59,6 +59,12 @@ class MainFrameController(object):
     # File menu actions
     #
 
+    def on_file_new(self, event):
+        try:
+            self._file_new(self._get_file_path("New"))
+        except NoFilePathSelected:
+            pass
+
     def on_open(self, event):
         try:
             self._open(self._get_file_path("Open"))
@@ -90,11 +96,7 @@ class MainFrameController(object):
     #
 
     def on_test_new(self, event):
-        test = AutopilotTest()
-        d = TestEditorDialog(self.view, "New Test", test)
-        if d.ShowModal() == wx.ID_OK:
-            self.view.NewTest(test)
-            self._save(self.path)
+        return self._test_new()
 
     def on_remove_test(self, event):
         test = self._get_test()
@@ -149,6 +151,9 @@ class MainFrameController(object):
                     "-p", test.manuscript_paths,
                     "-m", test.start_manuscript,
                     "-i"]
+            if test.placeholders is not "":
+                args.append("-c")
+                args.append(test.placeholders)
             self._execute_test(args)
             self.on_open_log(None)
         except NoTestFound:
@@ -230,11 +235,19 @@ class MainFrameController(object):
             ET.SubElement(atest, "debug").text = "%s" % test.debug
             ET.SubElement(atest, "log").text = "%s" % test.log_dialogs
             ET.SubElement(atest, "inspect").text = "%s" % test.inspect
+            ET.SubElement(atest, "placeholders").text = "%s" % test.placeholders
             tree = ET.ElementTree(root)
             tree.write(path)
 
+    def _file_new(self, path):
+        self.path = path
+        self.view.ClearAllTests()
+        if self.on_test_new(None):
+            self.on_save(None)
+            self._open(path)
+
     def _open(self, path):
-        self.view.ClearTests()
+        self.view.ClearAllTests()
         self.path = path
         e = xml.etree.ElementTree.parse(path).getroot()
         for xmltest in e.findall('autopilottest'):
@@ -247,6 +260,7 @@ class MainFrameController(object):
             test.set_debug(xmltest.find("debug").text == "True")
             test.set_log_dialogs(xmltest.find("log").text == "True")
             test.set_inspect(xmltest.find("inspect").text == "True")
+            test.set_placeholders(xmltest.find("placeholders").text)
             self.view.NewTest(test)
         self.view.SelectFirstTest()
         self.view.DisplaySelectedTest()
@@ -263,3 +277,12 @@ class MainFrameController(object):
         if d.ShowModal() == wx.ID_OK:
             return d.GetPath()
         raise NoFilePathSelected()
+
+    def _test_new(self):
+        test = AutopilotTest()
+        d = TestEditorDialog(self.view, "New Test", test)
+        if d.ShowModal() == wx.ID_OK:
+            self.view.NewTest(test)
+            self._save(self.path)
+            return True
+        return False
