@@ -21,6 +21,7 @@ import os
 
 LOADED = False
 SETTINGS_NAME = "autopilot.settings"
+RECENTLY_OPENED = "Recently opened: "
 
 
 class Settings(object):
@@ -32,14 +33,15 @@ class Settings(object):
             LOADED = True
 
     def _load(self):
+        self.recently_opened = []
         path = os.path.join(os.getcwd(), SETTINGS_NAME)
         if os.path.exists(path):
-            self.recently_opened = []
-            with open(path) as f:
-                self.recently_opened = [line for line in f.read().decode("utf-8").split("\n")
-                                        if len(line.strip()) > 0 and os.path.exists(line.strip())]
-        else:
-            self.recently_opened = []
+            self._load_recently_opened(path)
+
+    def _load_recently_opened(self, path):
+        with open(path) as f:
+            self.recently_opened = [line[len(RECENTLY_OPENED):] for line in f.read().decode("utf-8").split("\n")
+                                    if line.startswith(RECENTLY_OPENED) and os.path.exists(line[len(RECENTLY_OPENED):].strip())]
 
     def save_recently_opened(self, path):
         if os.path.exists(path) and path not in self.recently_opened:
@@ -48,12 +50,17 @@ class Settings(object):
                 del(self.recently_opened[0])
             with open(os.path.join(os.getcwd(), "autopilot.settings"), "w") as f:
                 for path in self.recently_opened:
-                    f.write(path.encode("utf-8"))
+                    f.write("%s%s" % (RECENTLY_OPENED, path.encode("utf-8")))
                     f.write("\n")
             return True
         else:
             return False
-            
 
     def get_recently_opened(self):
         return self.recently_opened
+
+    def _save(self):
+        with open(os.path.join(os.getcwd(), "autopilot.settings"), "w") as f:
+            for path in self.recently_opened:
+                f.write("%s%s" % (RECENTLY_OPENED, path.encode("utf-8")))
+                f.write("\n")
