@@ -20,6 +20,9 @@ import os
 import xml.etree.ElementTree as ET
 
 
+START_SCRIPT = os.path.join(os.path.dirname(__file__), "..", "..", "..", "run.py")
+
+
 class AutopilotTest(object):
 
     def __init__(self):
@@ -102,7 +105,8 @@ class AutopilotTest(object):
             pass
 
     def get_argv(self):
-        argv = [self.app_under_test,
+        argv = ["python", START_SCRIPT,
+                self.app_under_test,
                 "-p", self.manuscript_paths,
                 "-m", self.start_manuscript,
                 "-t", self.delay]
@@ -116,6 +120,27 @@ class AutopilotTest(object):
             argv.append("-i")
         if self.placeholders != "":
             argv.append("-c %s" % self.placeholders)
+        return argv
+
+    def get_argv_for_inspection(self):
+        argv = ["python", START_SCRIPT,
+                self.get_app(),
+                "-p", self.manuscript_paths,
+                "-m", self.start_manuscript,
+                "-i"]
+        if self.placeholders is not "":
+            argv.append("-c")
+            argv.append(self.placeholders)
+        return argv
+
+    def get_argv_for_selection_run(self, TEMPFILE):
+        argv = ["python", START_SCRIPT,
+                self.get_app(),
+                "-p", os.getcwd(),
+                "-m", TEMPFILE,
+                "-d",
+                "-l",
+                "-e"]
         return argv
 
     def to_display_format(self):
