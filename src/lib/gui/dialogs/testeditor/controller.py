@@ -37,6 +37,7 @@ class TestEditorDialogController(object):
         self.view.SetInspect(self.autopilot_test.get_inspect())
         self.view.SetDelay(self.autopilot_test.get_delay())
         self.view.SetExit(self.autopilot_test.get_exit())
+        self.view.SetPlaceholders(self.autopilot_test.get_placeholders())
 
     def on_ok_clicked(self, event):
         if self._validate_input():
@@ -48,6 +49,7 @@ class TestEditorDialogController(object):
             self.autopilot_test.set_inspect(self.view.GetInspect())
             self.autopilot_test.set_delay(self.view.GetDelay())
             self.autopilot_test.set_exit_when_done(self.view.GetExit())
+            self.autopilot_test.set_placeholders(self.view.GetPlaceholders())
             self.view.CloseOk()
             self.autopilot_test.to_xml()
 
@@ -68,6 +70,12 @@ class TestEditorDialogController(object):
             else:
                 self.view.SetManuscript(path + ";" + d.GetPath())
 
+    def on_find_placeholders(self, event):
+        d = wx.FileDialog(self.view, "Find placeholders file")
+        if d.ShowModal() == wx.ID_OK:
+            self.view.SetPlaceholders(d.GetPath())
+        d.Destroy()
+        
     def _validate_input(self):
         try:
             self._validate_test_name()

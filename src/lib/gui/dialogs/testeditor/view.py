@@ -51,6 +51,16 @@ class TestEditorDialog(Dialog):
                 size="$(open_button_size)"
                 event_EVT_BUTTON="on_find_dir"
             />
+            <StaticText align="ALIGN_CENTER_VERTICAL" label="$(placeholders_text)" />
+            <TextCtrl
+                name="txt_placeholders"
+                width="350"
+            />
+            <Button
+                label="..."
+                size="$(open_button_size)"
+                event_EVT_BUTTON="on_find_placeholders"
+            />
         </FlexGridSizer>
         <StaticBoxSizerVertical label="$(flags)" border="LEFT|RIGHT">
             <CheckBox
@@ -103,6 +113,7 @@ class TestEditorDialog(Dialog):
             "flags": "Properties",
             "delay_text": "Delay in seconds: ",
             "open_button_size": (25, -1),
+            "placeholders_text": "Placeholders file"
         }, title=title)
         self.controller.on_init(autopilot_test)
 
@@ -129,6 +140,12 @@ class TestEditorDialog(Dialog):
 
     def SetManuscript(self, manuscript_dir):
         return self.txt_manuscript.SetValue(manuscript_dir)
+
+    def GetPlaceholders(self):
+        return self.txt_placeholders.GetValue()
+
+    def SetPlaceholders(self, dir):
+        return self.txt_placeholders.SetValue(dir)
 
     def GetLogDialogs(self):
         return self.cbx_log_dialogs.GetValue()

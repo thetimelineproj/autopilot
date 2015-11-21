@@ -30,7 +30,7 @@ class TestEngine(object):
     def __init__(self):
         self.appargs = ApplicationArguments()
         logger.set_debug(self.appargs.degbug())
-        self.manuscript = Manuscript(self.appargs.manuscripts(), self.appargs.paths())
+        self.manuscript = Manuscript(self.appargs.manuscripts(), self.appargs.paths(), self.appargs.placeholders())
         if self.appargs.autoexit():
             self.manuscript.add_autoexit_instruction()
 

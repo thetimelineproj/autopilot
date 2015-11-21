@@ -17,6 +17,7 @@
 
 
 import os
+import codecs
 from lib.manuscript.pathfinder import find_path
 
 
@@ -38,12 +39,12 @@ class Manuscript():
     Autopilot.data.txt.
     """
 
-    def __init__(self, manuscripts, paths):
+    def __init__(self, manuscripts, paths, placeholders=None):
         self.windows = []
         self.execution_started = False
         self.first_manuscript_path_found = None
         self.paths = paths
-        self.instructions = self._load_instructions(manuscripts)
+        self.instructions = self._load_instructions(manuscripts, placeholders)
 
     def __str__(self):
         collector = []
@@ -62,8 +63,11 @@ class Manuscript():
     def add_autoexit_instruction(self):
         self.instructions.append("exit application")
 
-    def _load_instructions(self, manuscripts):
+    def _load_instructions(self, manuscripts, placeholders):
         self.instructions = []
+        if placeholders is not None:
+            self.instructions.append("# Adding placeholders from %s" % placeholders)
+            self._read_file_instructions(placeholders)
         for manuscript in manuscripts:
             self.instructions.append("# Loading data '%s'" % manuscript)
             self._read_file_instructions(manuscript)
@@ -94,5 +98,5 @@ class Manuscript():
             self.instructions.append("# Invalid include statement '%s'" % line)
 
     def _get_file_lines(self, path):
-        with open(path) as f:
-            return f.read().decode("utf-8").split("\n")
+        with codecs.open(path, "r", "utf-8") as f:
+            return f.read().split("\n")
