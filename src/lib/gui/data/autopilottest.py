@@ -27,6 +27,7 @@ class AutopilotTest(object):
         self.app_under_test = ""
         self.start_manuscript = ""
         self.manuscript_paths = "."
+        self.placeholders = ""
         self.debug = False
         self.log_dialogs = False
         self.inspect = False
@@ -84,6 +85,12 @@ class AutopilotTest(object):
     def set_exit_when_done(self, exit_when_done):
         self.exit_when_done = exit_when_done
 
+    def get_placeholders(self):
+        return self.placeholders
+
+    def set_placeholders(self, placeholders):
+        self.placeholders = placeholders
+
     def get_delay(self):
         return self.delay
 
@@ -107,6 +114,8 @@ class AutopilotTest(object):
             argv.append("-d")
         if self.inspect:
             argv.append("-i")
+        if self.placeholders != "":
+            argv.append("-c %s" % self.placeholders)
         return argv
 
     def to_display_format(self):
@@ -115,6 +124,7 @@ class AutopilotTest(object):
         collector.append("Application under test: %s" % self.app_under_test)
         collector.append("Start manuscript: %s" % self.start_manuscript)
         collector.append("Manuscript paths: %s" % self.manuscript_paths)
+        collector.append("Placeholders path: %s" % self.placeholders)
         collector.append("Exit when done: %s" % self.exit_when_done)
         collector.append("Inspect dialogs: %s" % self.inspect)
         collector.append("Log dialogs: %s" % self.log_dialogs)
@@ -128,6 +138,7 @@ class AutopilotTest(object):
         ET.SubElement(root, "app").text = self.app_under_test
         ET.SubElement(root, "manuscript").text = os.path.join(self.manuscript_paths, self.start_manuscript)
         ET.SubElement(root, "exit").text = "%s" % self.exit_when_done
+        ET.SubElement(root, "placeholders").text = "%s" % self.placeholders
         ET.SubElement(root, "delay").text = self.delay
         ET.SubElement(root, "debug").text = "%s" % self.debug
         ET.SubElement(root, "log").text = "%s" % self.log_dialogs

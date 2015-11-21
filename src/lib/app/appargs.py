@@ -51,6 +51,7 @@ The program searches for the program to test in the following ways:
     -e     add a last 'exit application' instruction
     -t     time delay between instructions in seconds
     -i     don't run test just display effective paths to program, script and log files",
+    -c     placeholder file to include first in the start manuscript
 """
 
 
@@ -63,6 +64,7 @@ HELP = {
     "e": "add a last 'exit application' instruction",
     "t": "time delay between instructions in seconds",
     "i": "don't run test just display effective paths to program, script and log files",
+    "c": "placeholder file to include first in the start manuscript",
 }
 
 
@@ -91,6 +93,8 @@ class ApplicationArguments(object):
             "-i", "--investigate", dest="investigate", action="store_true", default=False, help=HELP["i"])
         parser.add_option(
             "-t", "--time-delay", dest="timedelay", type="int", default=4, help=HELP["t"])
+        parser.add_option(
+            "-c", "--placeholders", dest="placeholders", default=None, help=HELP["c"])
         return parser
 
     def validate(self):
@@ -142,6 +146,10 @@ class ApplicationArguments(object):
             paths = path_string.split(";")
             return paths
         return []
+
+    def placeholders(self):
+        if self.options.placeholders is not None:
+            return self.options.placeholders.strip()
 
     def validate_py_extension(self, filename):
         if not filename.endswith(".py"):
