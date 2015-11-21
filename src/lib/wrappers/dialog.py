@@ -55,7 +55,7 @@ class Dialog(wxDialog, Wrapper):
         self._shown = True
         Logger.add_open(self)
         self.call_when_win_shows(self._explore_and_register)
-        super(Dialog, self).ShowModal()
+        return super(Dialog, self).ShowModal()
 
     @Overrides(wxDialog)
     def Destroy(self, *args, **kw):
