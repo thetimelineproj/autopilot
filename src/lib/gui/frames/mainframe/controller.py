@@ -138,7 +138,7 @@ class MainFrameController(object):
             pass
 
     #
-    # Manusctip menu actions
+    # Manuscript menu actions
     #
 
     def on_effective_manuscript(self, event):
