@@ -26,7 +26,6 @@ from lib.app.settings import Settings
 import xml.etree.ElementTree as ET
 
 
-START_SCRIPT = os.path.join(os.path.dirname(__file__), "..", "..", "..", "..", "run.py")
 TEMPFILE = "autopilottest.tmp"
 LOGFILE = "autopilot.log"
 
@@ -106,9 +105,7 @@ class MainFrameController(object):
     def on_test_run(self, event):
         try:
             test = self._get_test()
-            args = ["python", START_SCRIPT]
-            args.extend(test.get_argv())
-            self._execute_test(args)
+            self._execute_test(test.get_argv())
         except NoTestFound:
             pass
 
@@ -117,14 +114,7 @@ class MainFrameController(object):
             test = self._get_test()
             selection = self._get_selection()
             self._save_to_tempfile(selection)
-            args = ["python", START_SCRIPT,
-                    test.get_app(),
-                    "-p", os.getcwd(),
-                    "-m", TEMPFILE,
-                    "-d",
-                    "-l",
-                    "-e"]
-            self._execute_test(args)
+            self._execute_test(test.get_argv_for_selection_run(TEMPFILE))
         except NoTestFound:
             pass
         except NoSelectionFound:
@@ -146,15 +136,7 @@ class MainFrameController(object):
     def on_effective_manuscript(self, event):
         try:
             test = self._get_test()
-            args = ["python", START_SCRIPT,
-                    test.get_app(),
-                    "-p", test.manuscript_paths,
-                    "-m", test.start_manuscript,
-                    "-i"]
-            if test.placeholders is not "":
-                args.append("-c")
-                args.append(test.placeholders)
-            self._execute_test(args)
+            self._execute_test(test.get_argv_for_inspection())
             self.on_open_log(None)
         except NoTestFound:
             pass
