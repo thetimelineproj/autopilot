@@ -434,8 +434,7 @@ class Instruction(object):
             win = wx.GetApp().GetTopWindow()
             if win:
                 win.Destroy()
-            else:
-                facade.send_close_message_to_window(facade.get_active_window())
-            Logger.success(self.result_message("Application destroyed"))
+            facade.send_close_message_to_window(facade.get_active_window())
         finally:
-            sys.exit(0)
+            wx.GetApp().Exit()
+            Logger.success(self.result_message("Application destroyed"))
