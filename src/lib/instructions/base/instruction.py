@@ -428,9 +428,11 @@ class Instruction(object):
     # Exit application
     #
     def exit_application(self):
-        win = wx.GetApp().GetTopWindow()
-        if win:
-            win.Destroy()
-        else:
+        try:
+            win = wx.GetApp().GetTopWindow()
+            if win:
+                win.Destroy()
             facade.send_close_message_to_window(facade.get_active_window())
-        Logger.success(self.result_message("Application destroyed"))
+        finally:
+            wx.GetApp().Exit()
+            Logger.success(self.result_message("Application destroyed"))
