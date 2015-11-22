@@ -17,6 +17,8 @@
 # along with Autopilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import sys
+
 import wx
 
 import lib.instructions.base.scanner as scanner
@@ -428,9 +430,12 @@ class Instruction(object):
     # Exit application
     #
     def exit_application(self):
-        win = wx.GetApp().GetTopWindow()
-        if win:
-            win.Destroy()
-        else:
-            facade.send_close_message_to_window(facade.get_active_window())
-        Logger.success(self.result_message("Application destroyed"))
+        try:
+            win = wx.GetApp().GetTopWindow()
+            if win:
+                win.Destroy()
+            else:
+                facade.send_close_message_to_window(facade.get_active_window())
+            Logger.success(self.result_message("Application destroyed"))
+        finally:
+            sys.exit(0)
