@@ -17,6 +17,8 @@
 # along with Autopilot.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import sys
+
 import wx
 
 import lib.instructions.base.scanner as scanner

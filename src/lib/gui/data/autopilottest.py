@@ -53,11 +53,11 @@ class AutopilotTest(object):
         return self.manuscript_paths.split(";")[0]
 
     def get_manuscript(self):
-        return "%s\\%s" % (self.manuscript_paths, self.start_manuscript)
+        return os.path.join(self.manuscript_paths, self.start_manuscript)
 
     def set_start_manuscript(self, start_manuscript):
         try:
-            path, name = start_manuscript.rsplit("\\", 1)
+            path, name = os.path.split(start_manuscript)
         except:
             path = "."
             name = start_manuscript
@@ -161,7 +161,7 @@ class AutopilotTest(object):
         root = ET.Element("autopilottest")
         ET.SubElement(root, "name").text = self.name
         ET.SubElement(root, "app").text = self.app_under_test
-        ET.SubElement(root, "manuscript").text = "%s\\%s" % (self.manuscript_paths, self.start_manuscript)
+        ET.SubElement(root, "manuscript").text = os.path.join(self.manuscript_paths, self.start_manuscript)
         ET.SubElement(root, "exit").text = "%s" % self.exit_when_done
         ET.SubElement(root, "placeholders").text = "%s" % self.placeholders
         ET.SubElement(root, "delay").text = self.delay

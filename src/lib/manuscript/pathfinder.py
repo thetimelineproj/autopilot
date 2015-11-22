@@ -24,7 +24,7 @@ def find_path(manuscript, paths):
     Logger.add_debug("Searching data as given: %s" % manuscript)
     if os.path.exists(manuscript):
         Logger.add_debug("   Found")
-        return ".\\%s" % manuscript
+        return manuscript
     Logger.add_debug("   Not found")
     Logger.add_debug("Searching data with given paths")
     if len(paths) == 0:
