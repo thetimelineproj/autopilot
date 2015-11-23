@@ -449,9 +449,11 @@ def _parse_string(text, i):
     else:
         inx = text.find("'", i + 1)
     if inx < 0:
+        text = text.replace("~", '"')
         return text, STRING, None, len(text) - 1
     else:
-        return text[i:inx + 1], STRING, None, inx
+        text = text[i:inx + 1].replace("~", '"')
+        return text, STRING, None, inx
 
 
 def print_tokens(tokens):

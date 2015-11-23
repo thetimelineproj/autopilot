@@ -87,6 +87,8 @@ class Win32Strategy(object):
                "wxTextCtrl": "Edit",
                "wxComboBox": "ComboBox",
                "wxCheckBox": "Button",
+               "wxListBox": "ListBox",
+               "wxStaticText": "Text",
                }
         return MAP[wx_classname]
 

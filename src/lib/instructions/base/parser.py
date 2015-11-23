@@ -24,6 +24,7 @@ from lib.instructions.userinstructions.closedialog import CloseDialogInstruction
 from lib.instructions.userinstructions.entertext import EnterTextInstruction
 from lib.instructions.userinstructions.assertopen import AssertOpenInstruction
 from lib.instructions.userinstructions.assertclosed import AssertClosedInstruction
+from lib.instructions.userinstructions.asserttext import AssertTextInstruction
 from lib.instructions.userinstructions.exit import ExitInstruction
 from lib.instructions.userinstructions.selectmenu import SelectMenuInstruction
 from lib.instructions.userinstructions.clickmouse import ClickMouseInstruction
@@ -76,6 +77,7 @@ def AssertThatInstructionSyntaxExceptionIsRaised(f):
 def create_instruction(CMDS, tokens):
     SYNTAX_CHECKERS = {AssertOpenInstruction: syntaxcheck_assert_open_instruction,
                        AssertClosedInstruction: syntaxcheck_assert_closed_instruction,
+                       AssertTextInstruction: syntaxcheck_assert_text_instruction,
                        ClickButtonInstruction: syntaxcheck_click_button_instruction,
                        ClickCheckboxInstruction: syntaxcheck_click_checkbox_instruction,
                        ClickMouseInstruction: syntaxcheck_click_mouse_instruction,
@@ -96,7 +98,9 @@ def create_instruction(CMDS, tokens):
 
 @AssertThatInstructionSyntaxExceptionIsRaised
 def parse_assert(instruction_line, tokens):
-    CMDS = {"open": AssertOpenInstruction, "closed": AssertClosedInstruction}
+    CMDS = {"open": AssertOpenInstruction,
+            "closed": AssertClosedInstruction,
+            "text": AssertTextInstruction}
     return create_instruction(CMDS, tokens)
 
 
@@ -172,6 +176,34 @@ def syntaxcheck_assert_closed_instruction(tokens):
       (4,   scanner.RP,          None,              -1),
       (5,   scanner.RP,          None,              -1),
     )
+    validate(tokens, STATES)
+
+
+def syntaxcheck_assert_text_instruction(tokens):
+    """
+    State   token-id           token-subid        Next State
+    -----   ------------------ ------------------ ----------
+    """
+    STATES = (
+      (0,   scanner.KEYWORD,     scanner.ID_ASSERT,  1),
+      (1,   scanner.KEYWORD,     scanner.ID_TEXT,    2),
+      (2,   scanner.LP,          None,               3),
+      (3,   scanner.NUM,         None,               4),
+      (3,   scanner.STRING,      None,               4),
+      (3,   scanner.ID,          None,               4),
+      (3,   scanner.PLACEHOLDER, None,               4),
+      (4,   scanner.COMMA,       None,               5),
+      (4,   scanner.OR,          None,               7),
+      (5,   scanner.ID,          None,               6),
+      (5,   scanner.STRING,      None,               6),
+      (6,   scanner.RP,          None,              -1),
+      (7,   scanner.NUM,         None,               4),
+      (7,   scanner.STRING,      None,               4),
+      (7,   scanner.ID,          None,               4),
+      (8,   scanner.COMMA,       None,               5),
+    )
+    if len(tokens) < 7:
+        raise InstructionSyntaxException("Wrong number of tokens")
     validate(tokens, STATES)
 
 
