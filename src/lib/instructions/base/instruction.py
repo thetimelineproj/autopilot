@@ -135,38 +135,43 @@ class Instruction(object):
 
     def arg(self, n):
         """
-        Return the n:th argument, where n = 1,2,....
+        Return the n:th argument as a string, where n = 1,2,....
         """
         try:
-            tokens = self._find_tokens_between_parenthesis()
-            if n < 1 or n > len(tokens):
-                raise NotFoundException
-            token = tokens[n - 1]
-            return self._token_lexem_without_string_markers(token)
+            lexeme = self._find_nth_argument(n)
+            return self._argument_without_string_markers(lexeme)
         except:
             return None
 
-    def _token_lexem_without_string_markers(self, token):
+    def _find_nth_argument(self, n):
+        tokens = self._find_tokens_between_parenthesis()
+        if n < 1 or n > len(tokens):
+            raise NotFoundException
+        return tokens[n - 1].lexeme
+
+    def _argument_without_string_markers(self, lexeme):
         """
-           case 1:   "arg"
-           case 2: arg1|"arg2"
-           case 3: "arg2|arg2"
-           case 4: "arg2"|"arg2"
+           case 1:   "arg"         -> arg
+           case 2: arg1|"arg2"     -> arg1|arg2
+           case 3: "arg2|arg2"     -> arg1|arg2
+           case 4: "arg2"|"arg2"   -> arg1|arg2
         """
-        collector = []
-        for s in token.lexeme.split("|"):
-            if s.startswith('"'):
-                s = s[1:]
-            if s.endswith('"'):
-                s = s[:-1]
-            collector.append(s)
-        return "|".join(collector)
+        return "|".join([self._remove_leading_and_trailing_doublequote(s.strip()) for s in lexeme.split("|")])
+
+    def _remove_leading_and_trailing_doublequote(self, text):
+        return self._remove_leading_doublequote(self._remove_trailing_doublequote(text))
+
+    def _remove_leading_doublequote(self, text):
+        return text[1:] if text.startswith('"') else text
+
+    def _remove_trailing_doublequote(self, text):
+        return text[:-1] if text.endswith('"') else text
 
     def _find_tokens_between_parenthesis(self):
         tokens = []
-        lp_found = False
+        lp_has_been_seen = False
         for token in self.tokens:
-            if lp_found:
+            if lp_has_been_seen:
                 if token.id == scanner.RP:
                     return tokens
                 else:
@@ -174,7 +179,7 @@ class Instruction(object):
                         tokens.append(token)
             else:
                 if token.id == scanner.LP:
-                    lp_found = True
+                    lp_has_been_seen = True
         raise NotFoundException()
 
     def _symbol(self, index):
