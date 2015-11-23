@@ -149,9 +149,18 @@ class Instruction(object):
     def _token_lexem_without_string_markers(self, token):
         """
            case 1:   "arg"
-           case 2:arg1|"arg2"
+           case 2: arg1|"arg2"
+           case 3: "arg2|arg2"
+           case 4: "arg2"|"arg2"
         """
-        return token.lexeme.replace('"', "")
+        collector = []
+        for s in token.lexeme.split("|"):
+            if s.startswith('"'):
+                s = s[1:]
+            if s.endswith('"'):
+                s = s[:-1]
+            collector.append(s)
+        return "|".join(collector)
 
     def _find_tokens_between_parenthesis(self):
         tokens = []
@@ -212,6 +221,16 @@ class Instruction(object):
     # Send message to control
     #
     def _find_control_and_send_message(self, wx_classname, wx_func, native_func):
+        self.find_wxctrl(wx_classname)
+        if self.gui_explorer.is_wx_control():
+            wx_func()
+        elif self.gui_explorer.is_native_control():
+            native_func()
+
+    #
+    # get text from control
+    #
+    def _find_control_and_get_text(self, wx_classname, wx_func, native_func):
         self.find_wxctrl(wx_classname)
         if self.gui_explorer.is_wx_control():
             wx_func()
@@ -347,6 +366,26 @@ class Instruction(object):
         facade.send_text_to_text_control(self.gui_explorer.get_ctrl(), self.arg(2))
 
     #
+    # Assert text
+    #
+    def assert_text(self, classname):
+        self._find_control_and_get_text(classname, self._get_wx_control_text, self._get_native_control_text)
+
+    def _get_wx_control_text(self):
+        ctrl = self.gui_explorer.get_ctrl()
+        text = self.gui_explorer.get_ctrl().GetLabelText()
+        expected_text = self.arg(2)
+        for expected in expected_text.split("|"):
+            if expected.strip() == text.strip():
+                Logger.success("Text='%s'" % text)
+                return
+        Logger.failure("Text Expected:'%s'  Got:'%s'" % (expected, text))
+
+    def _get_native_control_text(self):
+        # facade.send_text_to_text_control(self.gui_explorer.get_ctrl(), self.arg(2))
+        pass
+
+    #
     # Select listbox item
     #
     def select_listbox_item(self, classname):
@@ -368,6 +407,9 @@ class Instruction(object):
             if inx is not wx.NOT_FOUND:
                 Logger.success(self.result_message("Found"))
                 ctrl.SetSelection(inx)
+                evt = wx.CommandEvent(wx.EVT_LISTBOX.evtType[0], ctrl.GetId())
+                evt.SetInt(inx)
+                wx.PostEvent(ctrl.GetParent(), evt)
             else:
                 raise NotFoundException("ListBox row(%s) in '%s'" % (text, name_label_or_position))
         else:
