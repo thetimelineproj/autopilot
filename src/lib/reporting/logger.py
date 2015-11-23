@@ -53,7 +53,7 @@ class Logger():
 
     @classmethod
     def set_path(self, path_to_logfile):
-        Logger.path = os.path.join(path_to_logfile, "Autopilot.log")
+        Logger.path = os.path.join(path_to_logfile, "autopilot.log")
         try:
             fp = open(Logger.path, "w")
             fp.close()
