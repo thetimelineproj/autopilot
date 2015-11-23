@@ -135,16 +135,19 @@ class Instruction(object):
 
     def arg(self, n):
         """
-        Return the n:th argument, where n = 1,2,....
+        Return the n:th argument as a string, where n = 1,2,....
         """
         try:
-            tokens = self._find_tokens_between_parenthesis()
-            if n < 1 or n > len(tokens):
-                raise NotFoundException
-            token = tokens[n - 1]
-            return self._argument_without_string_markers(token.lexeme)
+            lexeme = self._find_nth_argument(n)
+            return self._argument_without_string_markers(lexeme)
         except:
             return None
+
+    def _find_nth_argument(self, n):
+        tokens = self._find_tokens_between_parenthesis()
+        if n < 1 or n > len(tokens):
+            raise NotFoundException
+        return tokens[n - 1].lexeme
 
     def _argument_without_string_markers(self, lexeme):
         """
@@ -153,7 +156,7 @@ class Instruction(object):
            case 3: "arg2|arg2"     -> arg1|arg2
            case 4: "arg2"|"arg2"   -> arg1|arg2
         """
-        return "|".join([self._remove_leading_and_trailing_doublequote(s) for s in lexeme.split("|")])
+        return "|".join([self._remove_leading_and_trailing_doublequote(s.strip()) for s in lexeme.split("|")])
 
     def _remove_leading_and_trailing_doublequote(self, text):
         return self._remove_leading_doublequote(self._remove_trailing_doublequote(text))
