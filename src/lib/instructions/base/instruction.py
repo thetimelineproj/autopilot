@@ -169,9 +169,9 @@ class Instruction(object):
 
     def _find_tokens_between_parenthesis(self):
         tokens = []
-        lp_found = False
+        lp_has_been_seen = False
         for token in self.tokens:
-            if lp_found:
+            if lp_has_been_seen:
                 if token.id == scanner.RP:
                     return tokens
                 else:
@@ -179,7 +179,7 @@ class Instruction(object):
                         tokens.append(token)
             else:
                 if token.id == scanner.LP:
-                    lp_found = True
+                    lp_has_been_seen = True
         raise NotFoundException()
 
     def _symbol(self, index):
