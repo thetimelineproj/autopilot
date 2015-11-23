@@ -142,11 +142,11 @@ class Instruction(object):
             if n < 1 or n > len(tokens):
                 raise NotFoundException
             token = tokens[n - 1]
-            return self._token_lexem_without_string_markers(token)
+            return self._argument_without_string_markers(token.lexeme)
         except:
             return None
 
-    def _token_lexem_without_string_markers(self, token):
+    def _argument_without_string_markers(self, lexeme):
         """
            case 1:   "arg"
            case 2: arg1|"arg2"
@@ -154,7 +154,7 @@ class Instruction(object):
            case 4: "arg2"|"arg2"
         """
         collector = []
-        for s in token.lexeme.split("|"):
+        for s in lexeme.split("|"):
             if s.startswith('"'):
                 s = s[1:]
             if s.endswith('"'):
