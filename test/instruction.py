@@ -28,15 +28,23 @@ ok_count = 0
 
 class describe(unittest.TestCase):
 
-    def test_instruction_specific_execute_command(self):
+    def _instruction_specific_execute_command(self):
         self.instruction._execute(self.win)
         self.assertEquals(1, self.win.get_ok_count())
         self.assertEquals(2, self.win.get_call_count())
 
-    def test_baseclass_instruction_execute_command(self):
+    def _baseclass_instruction_execute_command(self):
         self.instruction.execute(self.manuscript, self.win)
         self.assertEquals(1, self.win.get_ok_count())
         self.assertEquals(2, self.win.get_call_count())
+
+    def test_argument_without_string_markers(self):
+        self.assertEquals("xyz", self.instruction._argument_without_string_markers('xyz'))
+        self.assertEquals("xyz", self.instruction._argument_without_string_markers('"xyz"'))
+        self.assertEquals("xyz|abc", self.instruction._argument_without_string_markers('"xyz"|"abc"'))
+        self.assertEquals("xyz|abc", self.instruction._argument_without_string_markers('"xyz|abc"'))
+        self.assertEquals("xyz|abc", self.instruction._argument_without_string_markers('xyz|"abc"'))
+        self.assertEquals("xyz|abc|1 23", self.instruction._argument_without_string_markers('xyz|"abc|1 23"'))
 
     def setUp(self):
         self.instruction = parse("click button (OK|Cancel)")
