@@ -42,9 +42,12 @@ class describe(unittest.TestCase):
         self.assertEquals("xyz", self.instruction._argument_without_string_markers('xyz'))
         self.assertEquals("xyz", self.instruction._argument_without_string_markers('"xyz"'))
         self.assertEquals("xyz|abc", self.instruction._argument_without_string_markers('"xyz"|"abc"'))
+        self.assertEquals("xyz|abc", self.instruction._argument_without_string_markers('"xyz"  |  "abc"'))
+        self.assertEquals(" xyz | abc ", self.instruction._argument_without_string_markers('" xyz "|" abc "'))
         self.assertEquals("xyz|abc", self.instruction._argument_without_string_markers('"xyz|abc"'))
         self.assertEquals("xyz|abc", self.instruction._argument_without_string_markers('xyz|"abc"'))
         self.assertEquals("xyz|abc|1 23", self.instruction._argument_without_string_markers('xyz|"abc|1 23"'))
+        self.assertEquals("xyz|abc", self.instruction._argument_without_string_markers('"xyz | abc"'))
 
     def setUp(self):
         self.instruction = parse("click button (OK|Cancel)")
