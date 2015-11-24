@@ -32,6 +32,7 @@ from lib.instructions.userinstructions.selectlistbox import SelectListBoxInstruc
 from lib.instructions.userinstructions.selectcombobox import SelectComboBoxInstruction
 from lib.instructions.userinstructions.selectcustomtreecontrol import SelectCustomTreeControlInstruction
 from lib.instructions.userinstructions.addplaceholder import AddPlaceholderInstruction
+from lib.instructions.userinstructions.changetab import ChangeTabInstruction
 from lib.reporting.logger import Logger
 from lib.app.exceptions import InstructionSyntaxException
 
@@ -46,6 +47,7 @@ def parse(instruction_line):
                    scanner.ID_EXIT: parse_exit,
                    scanner.ID_SELECT: parse_select,
                    scanner.ID_ADD: parse_add,
+                   scanner.ID_CHANGE: parse_change,
                    }
 
     if len(tokens) == 0:
@@ -89,6 +91,7 @@ def create_instruction(CMDS, tokens):
                        SelectComboBoxInstruction: syntaxcheck_select_combobox_instruction,
                        SelectCustomTreeControlInstruction: syntaxcheck_select_customtreecontrol_instruction,
                        AddPlaceholderInstruction: syntaxcheck_add_placeholder_instruction,
+                       ChangeTabInstruction: syntaxcheck_change_tab_instruction,
                        }
     if tokens[1].lexeme in CMDS:
         instruction = CMDS[tokens[1].lexeme]
@@ -109,6 +112,10 @@ def parse_click(instruction_line, tokens):
     CMDS = {"button": ClickButtonInstruction, "checkbox": ClickCheckboxInstruction, "mouse":  ClickMouseInstruction}
     return create_instruction(CMDS, tokens)
 
+@AssertThatInstructionSyntaxExceptionIsRaised
+def parse_change(instruction_line, tokens):
+    CMDS = {"tab": ChangeTabInstruction,}
+    return create_instruction(CMDS, tokens)
 
 @AssertThatInstructionSyntaxExceptionIsRaised
 def parse_close(instruction_line, tokens):
@@ -155,6 +162,26 @@ def syntaxcheck_add_placeholder_instruction(tokens):
       (4,   scanner.COMMA,       None,               5),
       (5,   scanner.STRING,      None,               6),
       (6,   scanner.RP,          None,              -1),
+    )
+    validate(tokens, STATES)
+
+
+def syntaxcheck_change_tab_instruction(tokens):
+    """
+    State   token-id           token-subid        Next State
+    -----   ------------------ ------------------ ----------
+    """
+    STATES = (
+      (0,   scanner.KEYWORD,     scanner.ID_CHANGE, 1),
+      (1,   scanner.KEYWORD,     scanner.ID_TAB,    2),
+      (2,   scanner.LP,          None,              3),
+      (3,   scanner.STRING,      None,              4),
+      (3,   scanner.ID     ,     None,              4),
+      (3,   scanner.PLACEHOLDER, None,              5),
+      (3,   scanner.NUM,         None,              4),
+      (4,   scanner.COMMA,       None,              5),
+      (5,   scanner.NUM,         None,              6),
+      (6,   scanner.RP,          None,             -1),
     )
     validate(tokens, STATES)
 

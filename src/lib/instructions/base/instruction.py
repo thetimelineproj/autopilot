@@ -260,6 +260,20 @@ class Instruction(object):
         facade.send_click_message_to_button(hwnd)
 
     #
+    # Change tab
+    #
+    def change_tab(self, wx_classname):
+        self._find_control_and_send_message(wx_classname,
+                                            self._change_tab_wx,
+                                            self._change_tab_native)
+
+    def _change_tab_wx(self):
+        self.gui_explorer.get_ctrl().ChangeSelection(int(self.arg(2)) - 1)
+
+    def _change_tab_native(self):
+        pass
+
+    #
     # select combobox item
     #
     def select_combobox_item(self, wx_classname):
