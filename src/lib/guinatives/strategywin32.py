@@ -89,6 +89,7 @@ class Win32Strategy(object):
                "wxCheckBox": "Button",
                "wxListBox": "ListBox",
                "wxStaticText": "Text",
+               "wxNotebook": "_wx_SysTabCtl32",
                }
         return MAP[wx_classname]
 

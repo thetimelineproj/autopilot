@@ -93,6 +93,8 @@ ID_CHECKBOX       = 121
 ID_LISTBOX        = 122
 ID_ADD            = 123
 ID_PLACEHOLDER    = 124
+ID_CHANGE         = 125
+ID_TAB            = 126
 
 #-----------------------------------------------------------------------
 #
@@ -125,6 +127,8 @@ INSTRUCTION_KEYWORDS = [
     "listbox",
     "add",
     "placeholder",
+    "change",
+    "tab",
 ]
 
 INSTRUCTION_ALIASES = {
@@ -169,6 +173,7 @@ TOKENID_MAP = {
     ID_SELECT        : INSTRUCTION_KEYWORDS[ID_SELECT  - ID_INCLUDE],
     ID_CLICK         : INSTRUCTION_KEYWORDS[ID_CLICK   - ID_INCLUDE],
     ID_CLOSE         : INSTRUCTION_KEYWORDS[ID_CLOSE   - ID_INCLUDE],
+    ID_CHANGE        : INSTRUCTION_KEYWORDS[ID_CHANGE  - ID_INCLUDE],
     ID_COMMENT       : INSTRUCTION_KEYWORDS[ID_COMMENT - ID_INCLUDE],
     ID_BUTTON        : INSTRUCTION_KEYWORDS[ID_BUTTON  - ID_INCLUDE],
     ID_MENU          : INSTRUCTION_KEYWORDS[ID_MENU    - ID_INCLUDE],
@@ -228,6 +233,8 @@ SUBID_NAMES = {
     ID_CLICK          : "SELECT",
     ID_BUTTON         : "MENU",
     ID_CLOSE          : "CLOSE",
+    ID_CHANGE         : "CHANGE",
+    ID_TAB            : "TAB",
     ID_FRAME          : "FRAME",
     ID_HIDE           : "HIDE",
     ID_DIALOG         : "DIALOG",

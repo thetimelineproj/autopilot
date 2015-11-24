@@ -19,6 +19,7 @@
 import os
 import codecs
 from lib.manuscript.pathfinder import find_path
+from lib.reporting.logger import Logger
 
 
 class Manuscript():
@@ -98,5 +99,9 @@ class Manuscript():
             self.instructions.append("# Invalid include statement '%s'" % line)
 
     def _get_file_lines(self, path):
-        with codecs.open(path, "r", "utf-8") as f:
-            return f.read().split("\n")
+        try:
+            with codecs.open(path, "r", "utf-8") as f:
+                return f.read().split("\n")
+        except:
+            print "Can't read file: '%s'" % path
+            raise

@@ -444,6 +444,30 @@ class describe_add_placeholder_instruction(unittest.TestCase):
     def do_parse(self, text):
         self.instruction = parse(text)
 
+class describe_change_tab_instruction(unittest.TestCase):
+
+    def test_target_as_pos_is_ok(self):
+        self.do_parse("change tab ( 1, 1 )")
+        self.assertIsNotNone(self.instruction)
+
+    def test_target_as_name_is_ok(self):
+        self.do_parse("change tab ( notebook, 1 )")
+        self.assertIsNotNone(self.instruction)
+
+    def test_target_as_placeholder_is_ok(self):
+        self.do_parse('change tab ( $notebook$, 1 )')
+        self.assertIsNotNone(self.instruction)
+
+    def test_target_as_string_is_ok(self):
+        self.do_parse('change tab ( "notebook", 1 )')
+        self.assertIsNotNone(self.instruction)
+
+    def test_wrong_number_of_tokens_fails(self):
+        self.assertRaises(InstructionSyntaxException,  self.do_parse, "change tab ( notebook, 1, 2 )")
+
+    def do_parse(self, text):
+        self.instruction = parse(text)
+
 
 class describe_invalid_second_keyword_instructions(unittest.TestCase):
 
