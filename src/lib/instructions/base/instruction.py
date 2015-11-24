@@ -260,7 +260,7 @@ class Instruction(object):
         facade.send_click_message_to_button(hwnd)
 
     #
-    # Change tab
+    # Change tab (in a Notebook)
     #
     def change_tab(self, wx_classname):
         self._find_control_and_send_message(wx_classname,
